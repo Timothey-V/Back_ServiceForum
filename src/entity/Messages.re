@@ -11,33 +11,36 @@ module Messages: {
   let fromString: string => option(t);
   let toJson: t => Js.Json.t;
   let toString: t => string;
+  let transformDate : Js.Date.t => string;
 } = {
   type t = {
-    idMessage: int,
+    idmessage: int,
     texte: string,
-    dateEnvoi: string,
-    idCours: string,
+    dateenvoi: string,
+    idcours: string,
     auteur: string,
-    nbLikes : int,
+    nblikes : int,
   };
 
-  let make = (idMessage, texte, dateEnvoi, idCours, auteur, nbLikes) => {idMessage, texte, dateEnvoi, idCours, auteur, nbLikes};
+  let make = (idmessage, texte, dateenvoi, idcours, auteur, nblikes) => {idmessage, texte, dateenvoi, idcours, auteur, nblikes};
 
-  let getIdMessage = message => message.idMessage;
+  let transformDate = date => Js.Date.toString(date);
+
+  let getIdMessage = message => message.idmessage;
   let getTexte = message => message.texte;
-  let getDateEnvoi = message => message.dateEnvoi;
-  let getIdCours = message => message.idCours;
+  let getDateEnvoi = message => message.dateenvoi;
+  let getIdCours = message => message.idcours;
   let getAuteur = message => message.auteur;
-  let getNbLikes = message => message.nbLikes;
+  let getNbLikes = message => message.nblikes;
 
   let fromJson = json =>
     Json.Decode.{
-      idMessage: json |> field("idMessage", int),
+      idmessage: json |> field("idmessage", int),
       texte: json |> field("texte", string),
-      dateEnvoi: json |> field("dateEnvoi", string),
-      idCours: json |> field("idCours", string),
+      dateenvoi: json |> field("dateenvoi", string),
+      idcours: json |> field("idcours", string),
       auteur: json |> field("auteur", string),
-      nbLikes: json |> field("nbLikes", int),
+      nblikes: json |> field("nblikes", int),
     };
 
   let fromString = jsonString =>
@@ -49,12 +52,12 @@ module Messages: {
   let toJson = message =>
     Json.Encode.(
       object_([
-        ("idMessage", string(string_of_int(message.idMessage))),
+        ("idmessage", string(string_of_int(message.idmessage))),
         ("texte", string(message.texte)),
-        ("dateEnvoi", string(message.dateEnvoi)),
-        ("idCours", string(message.idCours)),
+        ("dateenvoi", string(message.dateenvoi)),
+        ("idcours", string(message.idcours)),
         ("auteur", string(message.auteur)),
-        ("nbLikes", string(string_of_int(message.nbLikes))),
+        ("nblikes", string(string_of_int(message.nblikes))),
       ])
     );
   let toString = message => toJson(message) |> Js.Json.stringify;

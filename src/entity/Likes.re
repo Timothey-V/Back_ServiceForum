@@ -1,27 +1,27 @@
 module Likes: {
   type t;
-  let make: (int, int) => t;
+  let make: (int, string) => t;
   let getIdMessage: t => int;
-  let getAuteur: t => int;
+  let getAuteur: t => string;
   let fromJson: Js.Json.t => t;
   let fromString: string => option(t);
   let toJson: t => Js.Json.t;
   let toString: t => string;
 } = {
   type t = {
-    idMessage: int,
-    auteur: int,
+    idmessage: int,
+    auteur: string,
   };
 
-  let make = (idMessage, auteur) => {idMessage, auteur};
+  let make = (idmessage, auteur) => {idmessage, auteur};
 
-  let getIdMessage = likes => likes.idMessage;
+  let getIdMessage = likes => likes.idmessage;
   let getAuteur = likes => likes.auteur;
 
   let fromJson = json =>
     Json.Decode.{
-      idMessage: json |> field("idMessage", int),
-      auteur: json |> field("auteur", int),
+      idmessage: json |> field("idmessage", int),
+      auteur: json |> field("auteur", string),
     };
 
   let fromString = jsonString =>
@@ -33,8 +33,8 @@ module Likes: {
   let toJson = likes =>
     Json.Encode.(
       object_([
-        ("idMessage", string(string_of_int(likes.idMessage))),
-        ("auteur", string(string_of_int(likes.auteur))),
+        ("idmessage", string(string_of_int(likes.idmessage))),
+        ("auteur", string(likes.auteur)),
       ])
     );
   let toString = likes => toJson(likes) |> Js.Json.stringify;

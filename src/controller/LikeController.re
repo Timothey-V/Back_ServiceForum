@@ -1,69 +1,25 @@
 open Express;
 
-module Messages = {
- let getAll =
-     PromiseMiddleware.from((_next, req, rep) => {
-      let queryDict = Request.query(req);
-            (
-              switch (queryDict->Js.Dict.get("cours")) {
-                | Some(c) => {
-                MessagesDAO.Messages.getAllByCours(c |> Json_decode.string);
-                }
-                | None => MessagesDAO.Messages.getAll()
-              }
-            )
-       |> Js.Promise.(
-            then_(messagesJson => {
-              rep
-              |> Response.setHeader("Status", "200")
-              |> Response.sendJson(messagesJson)
-              |> resolve
-            })
-          );
-     });
-
-
-     let getMessagesByIdCours =
-     PromiseMiddleware.from((_next, req, rep) => {
-      let queryDict = Request.query(req);
-       switch (queryDict->Js.Dict.get("cours")) {
-       | None => rep |> Response.sendStatus(BadRequest) |> Js.Promise.resolve
-       | Some(idCours) =>
-       idCours
-         |> Json.Decode.string
-         |> MessagesDAO.Messages.getAllByCours
-         |> Js.Promise.(
-              then_(todoJson => {
-                rep
-                |> Response.setHeader("Status", "200")
-                |> Response.sendJson(todoJson)
-                |> resolve
-              })
-            )
-       }
-      });
-
+module Likes = {
 
  let create =
      PromiseMiddleware.from((_next, req, rep) =>
        Js.Promise.(
          (
              switch (Request.bodyJSON(req)) {
-             | None => reject(Failure("INVALID MESSAGE"))
+             | None => reject(Failure("INVALID MESSAGE OR AUTHOR"))
              | Some(reqJson) =>
                switch (
-                 reqJson |> Json.Decode.(field("texte", optional(string))),
-                 reqJson |> Json.Decode.(field("idCours", optional(string))),
+                 reqJson |> Json.Decode.(field("idMessage", optional(int))),
                  reqJson |> Json.Decode.(field("auteur", optional(string))),
                ) {
                | exception e => reject(e)
-               | (Some(texte), Some(idCours), Some(auteur)) =>
-                         MessagesDAO.Messages.create(
-                          texte,
-                          idCours,
+               | (Some(idMessage), Some(auteur)) =>
+                         LikesDAO.Likes.create(
+                          idMessage,
                           auteur,
                          );
-               | _ => reject(Failure("INVALID MESSAGE"))
+               | _ => reject(Failure("INVALID MESSAGE OR AUTHOR"))
                }
              }
          )
@@ -71,7 +27,7 @@ module Messages = {
               rep
               |> Response.setHeader("Status", "201")
               |> Response.sendJson(
-                   Json.Encode.(object_([("success", string("Message created"))])),
+                   Json.Encode.(object_([("success", string("Like created"))])),
                  )
               |> resolve
             })
@@ -99,17 +55,19 @@ module Messages = {
        Js.Promise.(
          (
              switch (Request.bodyJSON(req)) {
-             | None => reject(Failure("INVALID IDMESSAGE"))
+             | None => reject(Failure("INVALID IDMESSAGE OR AUTHOR"))
              | Some(reqJson) =>
                switch (
-                 reqJson |> Json.Decode.(field("idMessage", optional(int))),
+                reqJson |> Json.Decode.(field("idMessage", optional(int))),
+                reqJson |> Json.Decode.(field("auteur", optional(string))),
                ) {
                | exception e => reject(e)
-               | (Some(idMessage)) =>
-                         MessagesDAO.Messages.deleteMessage(
+               | (Some(idMessage), Some(auteur)) =>
+                         LikesDAO.Likes.delete(
                           idMessage,
+                          auteur
                          );
-               | _ => reject(Failure("INVALID MESSAGE"))
+               | _ => reject(Failure("INVALID IDMESSAGE OR AUTHOR"))
                }
              }
          )
@@ -117,7 +75,7 @@ module Messages = {
               rep
               |> Response.setHeader("Status", "201")
               |> Response.sendJson(
-                   Json.Encode.(object_([("success", string("Message deleted"))])),
+                   Json.Encode.(object_([("success", string("Like removed"))])),
                  )
               |> resolve
             })

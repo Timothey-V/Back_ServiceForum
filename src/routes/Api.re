@@ -26,11 +26,11 @@ App.use(app, Controller.logRequest);
 // SETUP ROUTES
 App.get(app, ~path="/", Controller.welcome);
 
-App.get(app, ~path="/message", MessageController.Messages.getAll);
+App.get(app, ~path="/message", MessageController.Messages.getMessagesByIdCours);
 App.post(app, ~path="/message", MessageController.Messages.create);
-//App.delete(app, ~path="/message", MessageController.Messages.delete);
+App.delete(app, ~path="/message", MessageController.Messages.delete);
 
-//App.post(app, ~path="/like", LikeController.Likes.create);
-//App.delete(app, ~path="/like", LikeController.Likes.delete);
+App.post(app, ~path="/like", LikeController.Likes.create);
+App.delete(app, ~path="/like", LikeController.Likes.delete);
 
 App.useOnPath(app, ~path="*", Controller.badRessource);
