@@ -1,37 +1,17 @@
 open Express;
 
 module Messages = {
- let getAll =
-     PromiseMiddleware.from((_next, req, rep) => {
-      let queryDict = Request.query(req);
-            (
-              switch (queryDict->Js.Dict.get("cours")) {
-                | Some(c) => {
-                MessagesDAO.Messages.getAllByCours(c |> Json_decode.string);
-                }
-                | None => MessagesDAO.Messages.getAll()
-              }
-            )
-       |> Js.Promise.(
-            then_(messagesJson => {
-              rep
-              |> Response.setHeader("Status", "200")
-              |> Response.sendJson(messagesJson)
-              |> resolve
-            })
-          );
-     });
 
 
-     let getMessagesByIdCours =
+     let getMessagesByIdCours2 =
      PromiseMiddleware.from((_next, req, rep) => {
-      let queryDict = Request.query(req);
-       switch (queryDict->Js.Dict.get("cours")) {
+      let query = Request.query(req);
+       switch (query->Js.Dict.get("cours")) {
        | None => rep |> Response.sendStatus(BadRequest) |> Js.Promise.resolve
        | Some(idCours) =>
        idCours
          |> Json.Decode.string
-         |> MessagesDAO.Messages.getAllByCours
+         |> MessagesRepository.Messages.getAllByCours2
          |> Js.Promise.(
               then_(todoJson => {
                 rep
@@ -42,6 +22,29 @@ module Messages = {
             )
        }
       });
+
+      let getMessagesByIdCours =
+      PromiseMiddleware.from((_next, req, rep) => {
+       let query = Request.query(req);
+        switch (
+          query->Js.Dict.get("cours"),
+          query->Js.Dict.get("auteur")
+          ) {
+            | (_,None) => rep |> Response.sendStatus(BadRequest) |> Js.Promise.resolve
+            | (None,_) => rep |> Response.sendStatus(BadRequest) |> Js.Promise.resolve
+
+            | (Some(idCours), Some(auteur)) => 
+          MessagesRepository.Messages.getAllByCours(Json.Decode.string(idCours), Json.Decode.string(auteur))
+          |> Js.Promise.(
+               then_(todoJson => {
+                 rep
+                 |> Response.setHeader("Status", "200")
+                 |> Response.sendJson(todoJson)
+                 |> resolve
+               })
+             )
+        }
+       });
 
 
  let create =
@@ -58,7 +61,7 @@ module Messages = {
                ) {
                | exception e => reject(e)
                | (Some(texte), Some(idCours), Some(auteur)) =>
-                         MessagesDAO.Messages.create(
+                         MessagesRepository.Messages.create(
                           texte,
                           idCours,
                           auteur,
@@ -106,7 +109,7 @@ module Messages = {
                ) {
                | exception e => reject(e)
                | (Some(idMessage)) =>
-                         MessagesDAO.Messages.deleteMessage(
+                         MessagesRepository.Messages.deleteMessage(
                           idMessage,
                          );
                | _ => reject(Failure("INVALID MESSAGE"))

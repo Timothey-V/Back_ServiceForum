@@ -15,7 +15,7 @@ module Likes = {
                ) {
                | exception e => reject(e)
                | (Some(idMessage), Some(auteur)) =>
-                         LikesDAO.Likes.create(
+                         LikesRepository.Likes.create(
                           idMessage,
                           auteur,
                          );
@@ -63,7 +63,7 @@ module Likes = {
                ) {
                | exception e => reject(e)
                | (Some(idMessage), Some(auteur)) =>
-                         LikesDAO.Likes.delete(
+                         LikesRepository.Likes.delete(
                           idMessage,
                           auteur
                          );
