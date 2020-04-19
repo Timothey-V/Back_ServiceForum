@@ -11,13 +11,13 @@ module Likes = {
              | Some(reqJson) =>
                switch (
                  reqJson |> Json.Decode.(field("idMessage", optional(int))),
-                 reqJson |> Json.Decode.(field("auteur", optional(string))),
+                 reqJson |> Json.Decode.(field("userId", optional(string))),
                ) {
                | exception e => reject(e)
-               | (Some(idMessage), Some(auteur)) =>
+               | (Some(idMessage), Some(userId)) =>
                          LikesRepository.Likes.create(
                           idMessage,
-                          auteur,
+                          userId,
                          );
                | _ => reject(Failure("INVALID MESSAGE OR AUTHOR"))
                }
@@ -32,7 +32,7 @@ module Likes = {
               |> resolve
             })
          |> catch(err => {
-              Js.log(err);
+              //Js.log(err);
               rep
               |> Response.setHeader("Status", "400")
               |> Response.sendJson(
@@ -59,13 +59,13 @@ module Likes = {
              | Some(reqJson) =>
                switch (
                 reqJson |> Json.Decode.(field("idMessage", optional(int))),
-                reqJson |> Json.Decode.(field("auteur", optional(string))),
+                reqJson |> Json.Decode.(field("userId", optional(string))),
                ) {
                | exception e => reject(e)
-               | (Some(idMessage), Some(auteur)) =>
+               | (Some(idMessage), Some(userId)) =>
                          LikesRepository.Likes.delete(
                           idMessage,
-                          auteur
+                          userId
                          );
                | _ => reject(Failure("INVALID IDMESSAGE OR AUTHOR"))
                }
@@ -80,7 +80,7 @@ module Likes = {
               |> resolve
             })
          |> catch(err => {
-              Js.log(err);
+              //Js.log(err);
               rep
               |> Response.setHeader("Status", "400")
               |> Response.sendJson(

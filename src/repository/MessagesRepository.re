@@ -1,57 +1,6 @@
 open DbConnexion;
 
 module Messages = {
-  let getAll = () =>
-      Js.Promise.(
-        Dbconnexion.knex
-        |> Knex.fromTable("forum_messages")
-        |> Knex.toPromise
-        |> then_(results => {
-          Messages.Messageslist.fromJson(results)
-             |> List.map(messages => {
-                  Messages.Messages.make(
-                    Messages.Messages.getIdMessage(messages),
-                    Messages.Messages.getTexte(messages),
-                    Messages.Messages.getDateEnvoi(messages),
-                    Messages.Messages.getIdCours(messages),
-                    Messages.Messages.getAuteur(messages),
-                    2,
-                  )
-                })
-             |> Messages.Messageslist.toJson
-             |> resolve
-           })
-      );
-  
-  let getAllByCours2 : string => Js.Promise.t(Js.Json.t) =
-  cours =>
-      Js.Promise.(
-
-        Dbconnexion.knex  
-        |> Knex.fromTable("forum_messages")
-        |> Knex.where({"forum_messages.idcours": cours})
-        |> Knex.orderBy("dateenvoi")
-        |> Knex.toPromise
-        |> then_(results => {
-              Js.log(results)
-              Messages.Messageslist.fromJson(results)
-              |> List.map(messages => {
-                  Messages.Messages.make(
-                    Messages.Messages.getIdMessage(messages),
-                    Messages.Messages.getTexte(messages),
-                    Messages.Messages.getDateEnvoi(messages),
-                    Messages.Messages.getIdCours(messages),
-                    Messages.Messages.getAuteur(messages),
-                    1,
-                  )
-                })
-              |> Messages.Messageslist.toJson
-              |> resolve
-            })
-      );
-
-
-      
 
       let getAllByCours : (string, string)  => Js.Promise.t(Js.Json.t) = (cours, auteur) =>
           Js.Promise.(    

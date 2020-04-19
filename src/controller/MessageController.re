@@ -2,39 +2,18 @@ open Express;
 
 module Messages = {
 
-
-     let getMessagesByIdCours2 =
-     PromiseMiddleware.from((_next, req, rep) => {
-      let query = Request.query(req);
-       switch (query->Js.Dict.get("cours")) {
-       | None => rep |> Response.sendStatus(BadRequest) |> Js.Promise.resolve
-       | Some(idCours) =>
-       idCours
-         |> Json.Decode.string
-         |> MessagesRepository.Messages.getAllByCours2
-         |> Js.Promise.(
-              then_(todoJson => {
-                rep
-                |> Response.setHeader("Status", "200")
-                |> Response.sendJson(todoJson)
-                |> resolve
-              })
-            )
-       }
-      });
-
       let getMessagesByIdCours =
       PromiseMiddleware.from((_next, req, rep) => {
        let query = Request.query(req);
         switch (
           query->Js.Dict.get("cours"),
-          query->Js.Dict.get("auteur")
+          query->Js.Dict.get("userId")
           ) {
             | (_,None) => rep |> Response.sendStatus(BadRequest) |> Js.Promise.resolve
             | (None,_) => rep |> Response.sendStatus(BadRequest) |> Js.Promise.resolve
 
-            | (Some(idCours), Some(auteur)) => 
-          MessagesRepository.Messages.getAllByCours(Json.Decode.string(idCours), Json.Decode.string(auteur))
+            | (Some(idCours), Some(userId)) => 
+          MessagesRepository.Messages.getAllByCours(Json.Decode.string(idCours), Json.Decode.string(userId))
           |> Js.Promise.(
                then_(todoJson => {
                  rep
@@ -79,7 +58,7 @@ module Messages = {
               |> resolve
             })
          |> catch(err => {
-              Js.log(err);
+              //Js.log(err);
               rep
               |> Response.setHeader("Status", "400")
               |> Response.sendJson(
@@ -125,7 +104,7 @@ module Messages = {
               |> resolve
             })
          |> catch(err => {
-              Js.log(err);
+              //Js.log(err);
               rep
               |> Response.setHeader("Status", "400")
               |> Response.sendJson(
