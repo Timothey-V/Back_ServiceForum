@@ -2,6 +2,13 @@
  * Start listening on port 8080
  */
 
+let () = {
+  print_string("Startinq Noschool amqp message listener");
+  print_newline()
+};
+
+let receiverNewCourse   = ReceiverNewCourse.connection;
+
 let onListen = e =>
   switch (e) {
   | exception (Js.Exn.Error(e)) =>
