@@ -24,7 +24,11 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "helmet": "^3.22.0",
-    "pg": "^6.1.0"
+    "pg": "^6.1.0",
+    "bs-amqp-connection-manager": "^3.1.0",
+    "amqp-connection-manager": "^3.2.0",
+    "amqplib": "^0.5.5"
+    
   },
   "devDependencies": {
     "bs-platform": "^7.2.2",

@@ -17,6 +17,7 @@
   "suffix": ".bs.js",
   "namespace": true,
   "bs-dependencies": [
+    "bs-amqp-connection-manager",
     "bs-express",
     "bs-knex",
     "@glennsl/bs-json",
