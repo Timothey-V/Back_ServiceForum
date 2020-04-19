@@ -6,7 +6,7 @@ DROP SEQUENCE IF EXISTS FORUM_CHANNELS_SEQ_ID;
 create table FORUM_MESSAGES (
   idmessage INT PRIMARY KEY NOT NULL,
   texte VARCHAR(512),
-  dateEnvoi DATE,
+  dateEnvoi TIMESTAMP,
   idcours VARCHAR(50),
   auteur INT
 );
