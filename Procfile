@@ -1,1 +1,1 @@
-npm install bs-platform && npm start
+npm install https://github.com/BuckleScript/bucklescript.git && npm start
