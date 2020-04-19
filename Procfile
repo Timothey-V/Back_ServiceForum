@@ -1,1 +1,1 @@
-npm install bs-platform node_modules && npm start
+npm install bs-platform && npm start
