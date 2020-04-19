@@ -1,0 +1,1 @@
+npm install -i bs-platform && npm start
