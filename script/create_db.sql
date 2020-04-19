@@ -1,20 +1,28 @@
-DROP TABLE IF EXISTS FORUM_MESSAGES;
 DROP TABLE IF EXISTS FORUM_LIKES;
+DROP TABLE IF EXISTS FORUM_MESSAGES;
+DROP TABLE IF EXISTS FORUM_CHANNELS;
+DROP SEQUENCE IF EXISTS FORUM_CHANNELS_SEQ_ID;
 
 create table FORUM_MESSAGES (
-	idmessage INT PRIMARY KEY NOT NULL,
-	texte VARCHAR(512),
-	dateEnvoi DATE,
-	idcours VARCHAR(50),
-	auteur INT
+  idmessage INT PRIMARY KEY NOT NULL,
+  texte VARCHAR(512),
+  dateEnvoi DATE,
+  idcours VARCHAR(50),
+  auteur INT
 );
 
 create table FORUM_LIKES (
-	idmessage INT,
-	auteur INT,
-	PRIMARY KEY (idmessage,auteur),
-	FOREIGN KEY (idmessage) REFERENCES FORUM_MESSAGES(idmessage)
+  idmessage INT,
+  auteur INT,
+  PRIMARY KEY (idmessage,auteur),
+  FOREIGN KEY (idmessage) REFERENCES FORUM_MESSAGES(idmessage)
 );
+
+create sequence forum_channels_seq_id start with 1;
+CREATE TABLE forum_channels (
+    id int DEFAULT NEXTVAL('forum_channels_seq_id'),
+    coursname varchar unique
+  );
 
 insert into FORUM_MESSAGES (idmessage, texte, dateEnvoi, idcours, auteur) values (1, 'suscipit nulla elit ac nulla sed vel enim sit amet', '2020-04-06 20:30:58', 'in', 4);
 insert into FORUM_MESSAGES (idmessage, texte, dateEnvoi, idcours, auteur) values (2, 'sed vestibulum sit amet cursus id turpis integer aliquet massa id lobortis', '2020-04-05 06:35:31', 'vulputate ut', 3);
